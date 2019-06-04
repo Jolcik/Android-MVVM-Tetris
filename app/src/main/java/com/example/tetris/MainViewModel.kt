@@ -4,18 +4,22 @@ import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.tetris.interfaces.NewTetriminoCallback
+import com.example.tetris.GameController.Companion.MOVE_LEFT
+import com.example.tetris.GameController.Companion.MOVE_RIGHT
+import com.example.tetris.GameController.Companion.ROTATE_LEFT
+import com.example.tetris.GameController.Companion.ROTATE_RIGHT
+import com.example.tetris.interfaces.TetriminoCallback
 import com.example.tetris.models.Block
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.scheduleAtFixedRate
 
-class MainViewModel: ViewModel(), NewTetriminoCallback {
+class MainViewModel: ViewModel(), TetriminoCallback {
 
-    val blockList: MutableLiveData<List<Block>> = MutableLiveData()
-    var timer: Timer = Timer()
+    val blockList: MutableLiveData<List<Block>> = MutableLiveData() // lista blokow do obserowania przez view
+    var timer: Timer = Timer() // timer do wywolywania kolejnych tykniec
 
-    var gameController: GameController
+    var gameController: GameController // klasa sterujaca gra
 
     init {
         // inicjalizacja zmiennych
@@ -23,7 +27,7 @@ class MainViewModel: ViewModel(), NewTetriminoCallback {
         gameController = GameController(this)
 
         // ustawiamy timer
-        timer.scheduleAtFixedRate(1000, 1000){ onTimerTick() }
+        timer.scheduleAtFixedRate(1000, 500){ onTimerTick() }
     }
 
     fun onTimerTick(){
@@ -35,9 +39,33 @@ class MainViewModel: ViewModel(), NewTetriminoCallback {
         blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
     }
 
+    fun moveButtonPressed(whichOption: Int){
+        when (whichOption) { // informujemy o wcisnieciu przycisku
+            MOVE_RIGHT -> gameController.moveTetrimino(MOVE_RIGHT)
+            MOVE_LEFT -> gameController.moveTetrimino(MOVE_LEFT)
+            ROTATE_RIGHT -> gameController.moveTetrimino(ROTATE_RIGHT)
+            ROTATE_LEFT -> gameController.moveTetrimino(ROTATE_LEFT)
+        }
+    }
 
-    override fun onNewTetriminoCallback() {
+
+    override fun onNewTetriminoCallback() { // zeby mozna bylo zwolnic timer po stworzeniu nowego tetrimino
+        // chodzi o to ze gdy trzymamy przycisk do poruszania sie w dol, to w trakcie calej akcji tetrimino moze sie
+        // ustawic na dole i kolejne zostanie stworzone
+        // trzymajac dalej przycisk timer dalej bedzoe wykonywal szybkie tykniecia, co przy slabym refleksie
+        // moze prowadzic do produkcji brzydkiego slowa (a nawet kilku), zatem jestesmy user friendly
+
+
         Log.d("VM", "Nowe tetrimino!")
     }
+
+    override fun tetriminoMovedCallback() {
+        var allBlocks: ArrayList<Block> = arrayListOf() // tworzymi liste ktora polaczy te dwie
+        allBlocks.addAll(gameController.blocks)
+        allBlocks.addAll(gameController.tetrimino.blocks)
+        Log.d("VM", gameController.tetrimino.blocks.toString())
+        blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
+    }
+
 
 }

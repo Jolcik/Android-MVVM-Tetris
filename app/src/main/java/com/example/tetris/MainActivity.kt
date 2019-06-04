@@ -1,17 +1,10 @@
 package com.example.tetris
 
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.SurfaceView
-import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.LinearLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -46,6 +39,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         // USTAW VIEWMODEL
         model = ViewModelProviders.of(this).get(MainViewModel::class.java)
         setupViews() // przygotuj wszystkie views
+        setupClickListeners()
 
         // ustaw obserwatora
         model.blockList.observe(this, Observer {
@@ -58,7 +52,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 gameDisplayer.drawBlock(model.blockList.value!!)
         })
 
-        button10.setOnClickListener { model.blockList.value = arrayListOf(Block(3, 0, Color.RED))}
+
     }
 
     fun displayState(){
@@ -67,6 +61,8 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
     fun setupViews(){
         gameDisplayer = findViewById(R.id.surfaceView)
+        moveRightButton = findViewById(R.id.moveRight_button)
+        moveLeftButton = findViewById(R.id.moveLeft_button)
 
 
         /*
@@ -89,6 +85,11 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
         //surfaceView.drawBlock(1)
         */
+    }
+
+    fun setupClickListeners(){
+        moveRightButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_RIGHT) }
+        moveLeftButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_LEFT) }
     }
 
 }

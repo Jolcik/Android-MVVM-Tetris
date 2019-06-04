@@ -8,15 +8,25 @@ class Block(var posX: Int, // pozycja X
 ) {
 
     fun moveDown(){
-        if(posY < GameController.PLAYGROUND_HEIGHT)
+        if(posY < GameController.PLAYGROUND_HEIGHT-1)
             ++posY
     }
 
+    fun moveRight(){
+        if(posX < GameController.PLAYGROUND_WIDTH-1)
+            ++posX
+    }
+
+    fun moveLeft(){
+        if(posX > 0)
+            --posX
+    }
+
     fun setPosition(x: Int, y: Int){
-        if (x in (0 until GameController.PLAYGROUND_WIDTH))
+        if (x in (0 until GameController.PLAYGROUND_WIDTH-1))
             posX = x
 
-        if (y in 0 until GameController.PLAYGROUND_HEIGHT)
+        if (y in 0 until GameController.PLAYGROUND_HEIGHT-1)
             posY = y
     }
 
