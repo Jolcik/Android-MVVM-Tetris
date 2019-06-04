@@ -50,7 +50,9 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
 
         blocks.forEach{ block ->
             paint.color = block.color
-            canvas?.drawRect(createRectangleFromBlock(block), paint)
+            var position = createPositionFromBlock(block)
+            canvas?.drawRect(position.left, position.top, position.right, position.bottom, paint)
+            //canvas?.drawRect(0f,0f,100f,100f, paint)
         }
 
         /*
@@ -76,18 +78,23 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
 
     }
 
-    fun createRectangleFromBlock(block: Block): Rect {
+    fun createPositionFromBlock(block: Block): BlockPosition {
 
-        val blockWidth = width/Block.PLAYGROUND_WIDTH
-        val blockHeight = height/Block.PLAYGROUND_HEIGHT
+        val blockWidth = width/GameController.PLAYGROUND_WIDTH.toFloat()
+        val blockHeight = height/GameController.PLAYGROUND_HEIGHT.toFloat()
 
         val left = blockWidth * block.posX
         val right = blockWidth * (block.posX+1)
         val top = blockHeight * block.posY
         val bottom = blockHeight * (block.posY+1)
 
-        return Rect(left, right, top, bottom)
+        return BlockPosition(left, right, top, bottom)
     }
+
+    data class BlockPosition(val left: Float,
+                             val right: Float,
+                             val top: Float,
+                             val bottom: Float)
 
 }
 

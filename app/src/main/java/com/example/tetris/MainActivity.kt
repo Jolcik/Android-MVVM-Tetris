@@ -40,15 +40,12 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         // pelny ekran
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        // schowaj action bar
-        supportActionBar?.hide()
-        setContentView(R.layout.activity_main)
+        supportActionBar?.hide() // schowaj action bar
+        setContentView(R.layout.activity_main) // ustaw layout
 
         // USTAW VIEWMODEL
         model = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
-        // przygotuj wszystkie views
-        setupViews()
+        setupViews() // przygotuj wszystkie views
 
         // ustaw obserwatora
         model.blockList.observe(this, Observer {
@@ -57,11 +54,11 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         })
 
         gameDisplayer.wasSurfaceCreated.observe(this, Observer {
-            if(gameDisplayer.wasSurfaceCreated.value == true)
+            if(it == true)
                 gameDisplayer.drawBlock(model.blockList.value!!)
         })
 
-        button10.setOnClickListener { model.blockList.value = arrayListOf(Block(5, 6, Color.RED)) }
+        button10.setOnClickListener { model.blockList.value = arrayListOf(Block(3, 0, Color.RED))}
     }
 
     fun displayState(){
