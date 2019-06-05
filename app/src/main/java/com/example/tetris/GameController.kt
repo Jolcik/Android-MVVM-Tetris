@@ -32,8 +32,7 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
         when (option) {
             MOVE_RIGHT -> tetrimino.moveRight(stateOfBoard)
             MOVE_LEFT -> tetrimino.moveLeft(stateOfBoard)
-            ROTATE_RIGHT -> tetrimino.rotateRight()
-            ROTATE_LEFT -> tetrimino.rotateLeft()
+            ROTATE -> tetrimino.rotate(stateOfBoard)
         }
         tetriminoCallback.tetriminoMovedCallback() // powiedz ze sie ruszyl
     }
@@ -58,13 +57,13 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
 
 
     companion object{
-        val PLAYGROUND_WIDTH = 10
-        val PLAYGROUND_HEIGHT = 20
+        const val PLAYGROUND_WIDTH = 10
+        const val PLAYGROUND_HEIGHT = 20
 
-        val MOVE_RIGHT = 1000
-        val MOVE_LEFT = 1001
-        val ROTATE_RIGHT = 1002
-        val ROTATE_LEFT = 1003
+        const val MOVE_RIGHT = 1000
+        const val MOVE_LEFT = 1001
+        const val MOVE_DOWN = 1002
+        const val ROTATE = 1003
     }
 
 }

@@ -71,9 +71,6 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
             }
         }
         */
-
-        Log.d("GSV", height.toString())
-        Log.d("GSV", width.toString())
         holder.unlockCanvasAndPost(canvas)
 
     }

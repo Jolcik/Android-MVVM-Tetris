@@ -4,10 +4,10 @@ import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.tetris.GameController.Companion.MOVE_DOWN
 import com.example.tetris.GameController.Companion.MOVE_LEFT
 import com.example.tetris.GameController.Companion.MOVE_RIGHT
-import com.example.tetris.GameController.Companion.ROTATE_LEFT
-import com.example.tetris.GameController.Companion.ROTATE_RIGHT
+import com.example.tetris.GameController.Companion.ROTATE
 import com.example.tetris.interfaces.TetriminoCallback
 import com.example.tetris.models.Block
 import java.util.*
@@ -35,7 +35,6 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         var allBlocks: ArrayList<Block> = arrayListOf() // tworzymi liste ktora polaczy te dwie
         allBlocks.addAll(gameController.blocks)
         allBlocks.addAll(gameController.tetrimino.blocks)
-        Log.d("VM", gameController.tetrimino.blocks.toString())
         blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
     }
 
@@ -43,8 +42,8 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         when (whichOption) { // informujemy o wcisnieciu przycisku
             MOVE_RIGHT -> gameController.moveTetrimino(MOVE_RIGHT)
             MOVE_LEFT -> gameController.moveTetrimino(MOVE_LEFT)
-            ROTATE_RIGHT -> gameController.moveTetrimino(ROTATE_RIGHT)
-            ROTATE_LEFT -> gameController.moveTetrimino(ROTATE_LEFT)
+            MOVE_DOWN -> gameController.moveTetrimino(MOVE_DOWN)
+            ROTATE -> gameController.moveTetrimino(ROTATE)
         }
     }
 
@@ -63,7 +62,6 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         var allBlocks: ArrayList<Block> = arrayListOf() // tworzymi liste ktora polaczy te dwie
         allBlocks.addAll(gameController.blocks)
         allBlocks.addAll(gameController.tetrimino.blocks)
-        Log.d("VM", gameController.tetrimino.blocks.toString())
         blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
     }
 

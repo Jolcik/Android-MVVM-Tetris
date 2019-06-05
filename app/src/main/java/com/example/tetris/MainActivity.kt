@@ -21,8 +21,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     lateinit var moveDownButton: Button
     lateinit var moveRightButton: Button
     lateinit var moveLeftButton: Button
-    lateinit var turnRightButton: Button
-    lateinit var turnLeftButton: Button
+    lateinit var rotateButton: Button
 
     // wyswietla gre tzn. wszystkie bloki itd
     private lateinit var gameDisplayer: GameSurfaceView
@@ -63,8 +62,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         gameDisplayer = findViewById(R.id.surfaceView)
         moveRightButton = findViewById(R.id.moveRight_button)
         moveLeftButton = findViewById(R.id.moveLeft_button)
-
-
+        rotateButton = findViewById(R.id.rotate_button)
         /*
         //gameDisplayer = GameSurfaceView(this.applicationContext )
         var canvas = Canvas()
@@ -90,6 +88,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     fun setupClickListeners(){
         moveRightButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_RIGHT) }
         moveLeftButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_LEFT) }
+        rotateButton.setOnClickListener { model.moveButtonPressed(GameController.ROTATE) }
     }
 
 }

@@ -7,12 +7,13 @@ import com.example.tetris.GameController
 class Tetrimino {
 
     var blocks: List<Block> = listOf()
+    var shape: Char //przchowuje informacje jakiego rodzaju jest dane tetrimino
 
     init {
-        var randomChar = shapes.get((0..6).shuffled().first())
-        Log.d("RC", randomChar.toString())
+        shape = shapes.get((0..6).shuffled().first())
+        Log.d("RC", shape.toString())
         var positions: Array<Int>
-        positions = when(randomChar){
+        positions = when(shape){
             'I' -> arrayOf(3, 0, 4, 0, 5, 0, 6, 0)
             'T' -> arrayOf(3, 0, 4, 0, 5, 0, 4, 1)
             'O' -> arrayOf(4, 0, 5, 0, 4, 1, 5, 1)
@@ -64,13 +65,42 @@ class Tetrimino {
         return true
     }
 
-    fun rotateRight(){
+    fun rotate(state: Array<Array<Int>>){
+        var center = when(shape){ // na podstawie ksztaltu wyznaczamy srodek figury
+            'I' -> Pair(blocks[1].posX, blocks[1].posY)
+            'T' -> Pair(blocks[1].posX, blocks[1].posY)
+            'O' -> return // kwadrat nie ma jak sie obrocic
+            'L' -> Pair(blocks[2].posX, blocks[2].posY)
+            'J' -> Pair(blocks[1].posX, blocks[1].posY)
+            'S' -> Pair(blocks[2].posX, blocks[2].posY)
+            'Z' -> Pair(blocks[1].posX, blocks[1].posY)
+            else -> Pair(0,0)
+        }
 
+        Log.d("ROT CENTER", center.toString())
+
+        blocks.forEach {
+            var x = it.posX - center.first
+            var y = center.second - it.posY // bo uklad wspolrzednych jest obrocony
+
+            // na dole to jest przekształcenie liniowe, tak wyznaczam punkty
+            if( center.first + y !in (0 until GameController.PLAYGROUND_WIDTH) || // czy w planszy
+                center.second + x !in (0 until GameController.PLAYGROUND_HEIGHT) || // uklad obrocony
+                state[center.first + y][center.second + x] == 1) // jak ktorykolwiek zajety
+                return // to wyjdz
+        }
+        Log.d("ROT BEFORE", blocks.toString())
+
+        // jak sie udalo to obroc te klocki
+        blocks.forEach {
+            var x = it.posX - center.first
+            var y = center.second - it.posY // bo uklad wspolrzednych jest obrocony
+            it.posX = center.first + y
+            it.posY = center.second + x // uklad obrocony
+        }
+        Log.d("ROT AFTER", blocks.toString())
     }
 
-    fun rotateLeft(){
-
-    }
 
     companion object{
         val shapes: List<Char> = listOf( // mozliwe ksztalty tetrimino jako litery
