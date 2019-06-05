@@ -3,6 +3,8 @@ package com.example.tetris
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import androidx.lifecycle.LifecycleOwner
@@ -62,6 +64,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         gameDisplayer = findViewById(R.id.surfaceView)
         moveRightButton = findViewById(R.id.moveRight_button)
         moveLeftButton = findViewById(R.id.moveLeft_button)
+        moveDownButton = findViewById(R.id.moveDown_button)
         rotateButton = findViewById(R.id.rotate_button)
         /*
         //gameDisplayer = GameSurfaceView(this.applicationContext )
@@ -88,7 +91,14 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     fun setupClickListeners(){
         moveRightButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_RIGHT) }
         moveLeftButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_LEFT) }
+        moveDownButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_DOWN) }
         rotateButton.setOnClickListener { model.moveButtonPressed(GameController.ROTATE) }
+
+        moveRightButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_RIGHT); true }
+        moveLeftButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_RIGHT); true }
+        moveDownButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_RIGHT); true }
+
+        //moveDownButton.set
     }
 
 }

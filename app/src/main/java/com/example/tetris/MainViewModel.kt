@@ -42,11 +42,28 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         when (whichOption) { // informujemy o wcisnieciu przycisku
             MOVE_RIGHT -> gameController.moveTetrimino(MOVE_RIGHT)
             MOVE_LEFT -> gameController.moveTetrimino(MOVE_LEFT)
+            MOVE_DOWN -> {
+                resetTimer()
+                onTimerTick()
+            }
+            ROTATE -> gameController.moveTetrimino(ROTATE)
+        }
+    }
+
+    fun moveButtonLongPressed(whichOption: Int){
+        when (whichOption) { // informujemy o wcisnieciu przycisku
+            MOVE_RIGHT -> gameController.moveTetrimino(MOVE_RIGHT)
+            MOVE_LEFT -> gameController.moveTetrimino(MOVE_LEFT)
             MOVE_DOWN -> gameController.moveTetrimino(MOVE_DOWN)
             ROTATE -> gameController.moveTetrimino(ROTATE)
         }
     }
 
+    fun resetTimer(){
+        timer.cancel()
+        timer = Timer()
+        timer.scheduleAtFixedRate(500, 500){ onTimerTick() }
+    }
 
     override fun onNewTetriminoCallback() { // zeby mozna bylo zwolnic timer po stworzeniu nowego tetrimino
         // chodzi o to ze gdy trzymamy przycisk do poruszania sie w dol, to w trakcie calej akcji tetrimino moze sie

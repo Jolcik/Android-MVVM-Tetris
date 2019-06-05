@@ -22,6 +22,7 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
         if(!tetrimino.moveDown(stateOfBoard)){ // jak nie moze sie ruszyc
             blocks.addAll(tetrimino.blocks)
             refreshStateOfBoard() // odswiez stan
+            checkIfColumnCanBeRemoved()
             tetriminoCallback.onNewTetriminoCallback() // powiedz ze jest nowy
                             // jest to po to zeby zwolnic timer, jak juz dojdzie
             tetrimino = Tetrimino()
@@ -42,6 +43,35 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
             for(j in (0 until PLAYGROUND_HEIGHT))
                 stateOfBoard[i][j] = 0
         blocks.forEach{ block -> stateOfBoard[block.posX][block.posY] = 1 } // ustaw dla danego bloku jeden
+    }
+
+    fun checkIfColumnCanBeRemoved(){
+0
+        for(j in (0 until PLAYGROUND_HEIGHT)){
+            for(i in (0 until PLAYGROUND_WIDTH)) {
+                if (stateOfBoard[i][j] == 0) // jezeli jest pusty blok to ten rzad odpada
+                    break
+
+                if (i == PLAYGROUND_WIDTH - 1) { // jak doszlismy do konca to usuwamy rzad
+                    deleteRow(j)
+                    moveDownUpperBlocks(j)
+                }
+            }
+        }
+    }
+
+    fun deleteRow(whichRow: Int){
+        blocks.filter { it.posY == whichRow }.forEach {
+            blocks.remove(it)
+        }
+        refreshStateOfBoard()
+    }
+
+    fun moveDownUpperBlocks(whichRow: Int){
+        blocks.filter { it.posY < whichRow }.forEach {
+            it.moveDown()
+        }
+        refreshStateOfBoard()
     }
 
     fun initStateOfBoard(){
