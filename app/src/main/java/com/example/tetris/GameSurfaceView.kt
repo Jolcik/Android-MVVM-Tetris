@@ -48,31 +48,28 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
         // Tlo
         canvas?.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
 
+        // siatka linii
+        var linePaint = Paint()
+        linePaint.color = Color.DKGRAY
+
+        for( i in 0..GameController.PLAYGROUND_WIDTH) // pionowe
+            canvas?.drawLine((i.toFloat()/GameController.PLAYGROUND_WIDTH)*width, 0f,
+                (i.toFloat()/GameController.PLAYGROUND_WIDTH)*width, height.toFloat(),
+                linePaint)
+
+        for( i in 0..GameController.PLAYGROUND_HEIGHT) // poziome
+            canvas?.drawLine(0f, (i.toFloat()/GameController.PLAYGROUND_HEIGHT)*height,
+                width.toFloat(), (i.toFloat()/GameController.PLAYGROUND_HEIGHT)*height,
+                linePaint)
+
+        // rysowanie blokow
         blocks.forEach{ block ->
             paint.color = block.color
             var position = createPositionFromBlock(block)
             canvas?.drawRect(position.left, position.top, position.right, position.bottom, paint)
-            //canvas?.drawRect(0f,0f,100f,100f, paint)
         }
 
-        /*
-        when(how){
-            1 -> {
-                paint.color = Color.YELLOW
-                canvas?.drawRect(0f, 0f, 200f, height.toFloat(), paint)
-            }
-            2 -> {
-                paint.color = Color.GREEN
-                canvas?.drawRect(50f, 0f, 200f, height.toFloat(), paint)
-            }
-            3 -> {
-                paint.color = Color.RED
-                canvas?.drawRect(100f, 0f, 200f, height.toFloat(), paint)
-            }
-        }
-        */
-        holder.unlockCanvasAndPost(canvas)
-
+        holder.unlockCanvasAndPost(canvas) // zaktualizowanie view
     }
 
     fun createPositionFromBlock(block: Block): BlockPosition {

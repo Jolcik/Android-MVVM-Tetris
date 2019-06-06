@@ -1,5 +1,6 @@
 package com.example.tetris
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -88,17 +89,23 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         */
     }
 
+
     fun setupClickListeners(){
-        moveRightButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_RIGHT) }
-        moveLeftButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_LEFT) }
+        moveRightButton.setOnClickListener {
+            if(!model.longPressingButton.first) model.moveButtonPressed(GameController.MOVE_RIGHT)
+            else model.moveButtonReleased(GameController.MOVE_RIGHT)
+        }
+        moveLeftButton.setOnClickListener {
+            if(!model.longPressingButton.first) model.moveButtonPressed(GameController.MOVE_LEFT)
+            else model.moveButtonReleased(GameController.MOVE_LEFT)
+        }
         moveDownButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_DOWN) }
         rotateButton.setOnClickListener { model.moveButtonPressed(GameController.ROTATE) }
 
-        moveRightButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_RIGHT); true }
-        moveLeftButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_RIGHT); true }
-        moveDownButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_RIGHT); true }
+        moveRightButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_RIGHT); false } // false oznacza ze nie skonsumowalismy eventu
+        moveLeftButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_LEFT); false } // jest to dlatego ze jak nie skonsumujemy to wywoluje sie zwykly click listener
+        moveDownButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_DOWN); false }
 
-        //moveDownButton.set
     }
 
 }
