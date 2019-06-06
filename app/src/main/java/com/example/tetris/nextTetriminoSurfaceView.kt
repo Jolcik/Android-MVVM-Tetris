@@ -1,9 +1,9 @@
 package com.example.tetris
 
 import android.content.Context
-import android.graphics.*
-import android.os.Parcel
-import android.os.Parcelable
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PixelFormat
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder
@@ -11,8 +11,7 @@ import android.view.SurfaceView
 import androidx.lifecycle.MutableLiveData
 import com.example.tetris.models.Block
 
-class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes), SurfaceHolder.Callback {
-
+class NextTetriminoSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes), SurfaceHolder.Callback {
     var surfaceHolder  = holder
 
     var wasSurfaceCreated: MutableLiveData<Boolean> = MutableLiveData()
@@ -38,7 +37,7 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
     }
 
 
-    fun drawBlock(blocks: List<Block>){
+    fun drawBlocks(blocks: List<Block>){
         var canvas = holder.lockCanvas()
         var paint = Paint()
 
@@ -52,14 +51,14 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
         var linePaint = Paint()
         linePaint.color = Color.DKGRAY
 
-        for( i in 0..GameController.PLAYGROUND_WIDTH) // pionowe
-            canvas?.drawLine((i.toFloat()/GameController.PLAYGROUND_WIDTH)*width, 0f,
-                (i.toFloat()/GameController.PLAYGROUND_WIDTH)*width, height.toFloat(),
+        for( i in 0..NEXT_TETRIMINO_WIDTH) // pionowe
+            canvas?.drawLine((i.toFloat()/NEXT_TETRIMINO_WIDTH)*width, 0f,
+                (i.toFloat()/NEXT_TETRIMINO_WIDTH)*width, height.toFloat(),
                 linePaint)
 
-        for( i in 0..GameController.PLAYGROUND_HEIGHT) // poziome
-            canvas?.drawLine(0f, (i.toFloat()/GameController.PLAYGROUND_HEIGHT)*height,
-                width.toFloat(), (i.toFloat()/GameController.PLAYGROUND_HEIGHT)*height,
+        for( i in 0..NEXT_TETRIMINO_HEIGHT) // poziome
+            canvas?.drawLine(0f, (i.toFloat()/NEXT_TETRIMINO_HEIGHT)*height,
+                width.toFloat(), (i.toFloat()/NEXT_TETRIMINO_HEIGHT)*height,
                 linePaint)
 
         // rysowanie blokow
@@ -81,8 +80,8 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
 
     fun createPositionFromBlock(block: Block): BlockPosition {
 
-        val blockWidth = width/GameController.PLAYGROUND_WIDTH.toFloat()
-        val blockHeight = height/GameController.PLAYGROUND_HEIGHT.toFloat()
+        val blockWidth = width/NEXT_TETRIMINO_WIDTH.toFloat()
+        val blockHeight = height/ NEXT_TETRIMINO_HEIGHT.toFloat()
 
         val left = blockWidth * block.posX
         val right = blockWidth * (block.posX+1)
@@ -97,5 +96,8 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
                              val top: Float,
                              val bottom: Float)
 
+    companion object{
+        const val NEXT_TETRIMINO_WIDTH = 6
+        const val NEXT_TETRIMINO_HEIGHT = 4
+    }
 }
-

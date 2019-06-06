@@ -18,8 +18,8 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/HalfScreen" android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/startScreenScore_text"/>
     <Button
             android:text="PLAY"
             android:layout_width="120dp"
@@ -31,15 +31,42 @@
             android:textSize="18sp" app:layout_constraintHorizontal_bias="0.498" android:layout_marginTop="32dp"
             app:layout_constraintTop_toTopOf="@+id/HalfScreen"/>
 
+    <TextView
+            android:text="SCORE:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/startScreenScore_text"
+            android:fontFamily="@font/allerta_stencil" android:textColor="@android:color/white"
+            android:textSize="24sp" android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/HalfScreen" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent" android:visibility="invisible"/>
+    <TextView
+            android:text="SCORE:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/score_text"
+            android:fontFamily="@font/allerta_stencil" android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/nextTetrimino_view"
+            app:layout_constraintStart_toStartOf="@+id/nextTetrimino_view"
+            app:layout_constraintEnd_toEndOf="@+id/nextTetrimino_view" android:visibility="gone"/>
     <com.example.tetris.GameSurfaceView
-            android:layout_width="250dp"
-            android:layout_height="500dp" android:id="@+id/surfaceView"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_width="240dp"
+            android:layout_height="480dp" android:id="@+id/surfaceView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.496" android:layout_marginStart="8dp"
-            android:visibility="visible"/>
+            android:layout_marginStart="16dp"
+            android:visibility="gone"/>
 
+    <com.example.tetris.NextTetriminoSurfaceView
+            android:layout_width="99dp"
+            android:layout_height="66dp" android:id="@+id/nextTetrimino_view"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone " android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/surfaceView" android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"/>
     <androidx.constraintlayout.widget.Guideline
             android:orientation="horizontal"
             android:layout_width="wrap_content"

@@ -16,8 +16,12 @@ import kotlin.concurrent.scheduleAtFixedRate
 
 class MainViewModel: ViewModel(), TetriminoCallback {
 
+    val score: MutableLiveData<Int> = MutableLiveData()
     val gameOver: MutableLiveData<Boolean> = MutableLiveData()
     val blockList: MutableLiveData<List<Block>> = MutableLiveData() // lista blokow do obserowania przez view
+    val nextTetrimino: MutableLiveData<Char> = MutableLiveData()
+    var nextColor: Int = 0
+
     var timer: Timer = Timer() // timer do wywolywania kolejnych tykniec
     var tickTime: Long = START_TICK_TIME
     var longPressedTimer: Timer = Timer()
@@ -32,9 +36,13 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
     fun startButtonClicked(){ // nowa gra
+        score.value = 0
         gameOver.value = false
         blockList.value = listOf()
         gameController = GameController(this) // tworzymy nowa gre
+        nextTetrimino.value = gameController.nextTetrimino
+        nextColor = gameController.nextColor
+        tickTime = START_TICK_TIME
         timer = Timer()
         timer.scheduleAtFixedRate(tickTime, tickTime){ onTimerTick() } // ustawiamy timer
     }
@@ -94,8 +102,6 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         timer.scheduleAtFixedRate(tickTime, tickTime){ onTimerTick() }
     }
 
-
-
     override fun onNewTetriminoCallback() { // zeby mozna bylo zwolnic timer po stworzeniu nowego tetrimino
         // chodzi o to ze gdy trzymamy przycisk do poruszania sie w dol, to w trakcie calej akcji tetrimino moze sie
         // ustawic na dole i kolejne zostanie stworzone
@@ -110,6 +116,9 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         */
         if(tickTime > MIN_TICK_TIME) // szybsza gra
             tickTime -= TICK_TIME_STEP
+        score.postValue(gameController.score)
+        nextColor = gameController.nextColor
+        nextTetrimino.postValue(gameController.nextTetrimino)
     }
 
     override fun tetriminoMovedCallback() {

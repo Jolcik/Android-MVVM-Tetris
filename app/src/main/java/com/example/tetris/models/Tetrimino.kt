@@ -4,16 +4,15 @@ import android.graphics.Color
 import android.util.Log
 import com.example.tetris.GameController
 
-class Tetrimino {
+class Tetrimino(whichShape: Char, whichColor: Int) {
 
     var blocks: List<Block> = listOf()
-    var shape: Char //przchowuje informacje jakiego rodzaju jest dane tetrimino
+    var shape: Char = whichShape //przchowuje informacje jakiego rodzaju jest dane tetrimino
+    var color: Int = whichColor
 
     init {
-        shape = shapes.get((0..6).shuffled().first())
-        Log.d("RC", shape.toString())
-        var positions: Array<Int>
-        positions = when(shape){
+        Log.d("RC", whichShape.toString())
+        var positions: Array<Int> = when(whichShape){
             'I' -> arrayOf(3, 0, 4, 0, 5, 0, 6, 0)
             'T' -> arrayOf(3, 0, 4, 0, 5, 0, 4, 1)
             'O' -> arrayOf(4, 0, 5, 0, 4, 1, 5, 1)
@@ -25,15 +24,20 @@ class Tetrimino {
         }
         Log.d("RC", positions.toString())
 
-        // losowanie koloru
-        val color = colors.get((0 until colors.size).shuffled().first())
-
         blocks = listOf( // tworzymy bloki i nadajemy im pozycje oraz kolor
             Block(positions[0], positions[1], color),
             Block(positions[2], positions[3], color),
             Block(positions[4], positions[5], color),
             Block(positions[6], positions[7], color)
         )
+    }
+
+    fun getNextTetrimino(): Char{
+        return shapes[(0 until shapes.size).shuffled().first()]
+    }
+
+    fun getNextColor(): Int{
+        return colors[(0 until colors.size).shuffled().first()]
     }
 
     fun moveDown(state: Array<Array<Int>>): Boolean {
