@@ -16,24 +16,27 @@ import kotlin.concurrent.scheduleAtFixedRate
 
 class MainViewModel: ViewModel(), TetriminoCallback {
 
+    val gameOver: MutableLiveData<Boolean> = MutableLiveData()
     val blockList: MutableLiveData<List<Block>> = MutableLiveData() // lista blokow do obserowania przez view
     var timer: Timer = Timer() // timer do wywolywania kolejnych tykniec
     var tickTime: Long = START_TICK_TIME
     var longPressedTimer: Timer = Timer()
 
-    var gameController: GameController // klasa sterujaca gra
+    lateinit var gameController: GameController // klasa sterujaca gra
 
     var longPressingButton: Pair<Boolean, Int> // Boolean - czy trwa jakas akcja dlugiego trzymanie
                                                 // Int - jaka akcja
 
     init {
-        // inicjalizacja zmiennych
-        blockList.value = listOf<Block>()
-        gameController = GameController(this)
         longPressingButton = Pair(false, 0)
+    }
 
-        // ustawiamy timer
-        timer.scheduleAtFixedRate(tickTime, tickTime){ onTimerTick() }
+    fun startButtonClicked(){ // nowa gra
+        gameOver.value = false
+        blockList.value = listOf()
+        gameController = GameController(this) // tworzymy nowa gre
+        timer = Timer()
+        timer.scheduleAtFixedRate(tickTime, tickTime){ onTimerTick() } // ustawiamy timer
     }
 
     fun onTimerTick(){
@@ -46,7 +49,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
 
     fun moveButtonPressed(whichOption: Int){
         Log.d("VM", longPressingButton.first.toString())
-        if(longPressingButton.first == false) // jak nie trzymamy jakiegos przycisku
+        if(longPressingButton.first == false && !gameController.isTheGameOver) // jak nie trzymamy jakiegos przycisku
             when (whichOption) { // informujemy o wcisnieciu przycisku
                 MOVE_RIGHT -> gameController.moveTetrimino(MOVE_RIGHT)
                 MOVE_LEFT -> gameController.moveTetrimino(MOVE_LEFT)
@@ -59,7 +62,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
     fun moveButtonLongPressed(whichButton: Int){
-        if(!longPressingButton.first){
+        if(!longPressingButton.first && !gameController.isTheGameOver){
             if(whichButton == MOVE_DOWN) {
                 timer.cancel()
                 timer = Timer()
@@ -77,7 +80,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
     fun moveButtonReleased(whichButton: Int){
-        if(whichButton == longPressingButton.second) {
+        if(whichButton == longPressingButton.second && !gameController.isTheGameOver) {
             if(whichButton == MOVE_DOWN)
                 resetTimer()
             else longPressedTimer.cancel()
@@ -92,6 +95,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
 
+
     override fun onNewTetriminoCallback() { // zeby mozna bylo zwolnic timer po stworzeniu nowego tetrimino
         // chodzi o to ze gdy trzymamy przycisk do poruszania sie w dol, to w trakcie calej akcji tetrimino moze sie
         // ustawic na dole i kolejne zostanie stworzone
@@ -104,6 +108,8 @@ class MainViewModel: ViewModel(), TetriminoCallback {
             longPressingButton = Pair(false, 0)
         }
         */
+        if(tickTime > MIN_TICK_TIME) // szybsza gra
+            tickTime -= TICK_TIME_STEP
     }
 
     override fun tetriminoMovedCallback() {
@@ -113,9 +119,16 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
     }
 
+    override fun gameOverCallback() {
+        timer.cancel()
+        gameOver.postValue(true)
+    }
+
     companion object{
-        const val START_TICK_TIME: Long = 500
+        const val START_TICK_TIME: Long = 700
         const val SHORT_TICK_TIME: Long = 100
+        const val MIN_TICK_TIME: Long = 300
+        const val TICK_TIME_STEP = 10
     }
 
 }

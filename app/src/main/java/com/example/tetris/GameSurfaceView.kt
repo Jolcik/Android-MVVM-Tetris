@@ -69,6 +69,13 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
             canvas?.drawRect(position.left, position.top, position.right, position.bottom, paint)
         }
 
+        // obramowanie
+        linePaint.color = Color.WHITE
+        canvas?.drawLine(0f, 0f, 0f, height.toFloat(), linePaint)
+        canvas?.drawLine(0f, 0f, width.toFloat(), 0f, linePaint)
+        canvas?.drawLine(0f, height.toFloat()-1, width.toFloat(), height.toFloat()-1, linePaint)
+        canvas?.drawLine(width.toFloat()-1, 0f, width.toFloat()-1, height.toFloat(), linePaint)
+
         holder.unlockCanvasAndPost(canvas) // zaktualizowanie view
     }
 

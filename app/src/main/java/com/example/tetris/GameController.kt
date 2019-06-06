@@ -12,7 +12,7 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
 
     var stateOfBoard: Array<Array<Int>> = arrayOf()
 
-
+    var isTheGameOver: Boolean = false
 
     init {
         initStateOfBoard() // tablice ze stanami trzeba przygotowac, bo
@@ -26,6 +26,12 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
             tetriminoCallback.onNewTetriminoCallback() // powiedz ze jest nowy
                             // jest to po to zeby zwolnic timer, jak juz dojdzie
             tetrimino = Tetrimino()
+            tetrimino.blocks.forEach { // jezeli w miejscu nowego tetrimino juz cos jest to koniec gry
+                if(stateOfBoard[it.posX][it.posY] == 1) {
+                    isTheGameOver = true
+                    tetriminoCallback.gameOverCallback()
+                }
+            }
         }
     }
 
@@ -87,8 +93,8 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
 
 
     companion object{
-        const val PLAYGROUND_WIDTH = 10
-        const val PLAYGROUND_HEIGHT = 20
+        const val PLAYGROUND_WIDTH = 100
+        const val PLAYGROUND_HEIGHT = 102
 
         const val MOVE_RIGHT = 1000
         const val MOVE_LEFT = 1001

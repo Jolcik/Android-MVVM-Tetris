@@ -2,12 +2,14 @@ package com.example.tetris
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -28,6 +30,10 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
     // wyswietla gre tzn. wszystkie bloki itd
     private lateinit var gameDisplayer: GameSurfaceView
+
+    // start screen
+    lateinit var startScreenButton: Button
+    lateinit var startScreenText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +60,14 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 gameDisplayer.drawBlock(model.blockList.value!!)
         })
 
-
+        model.gameOver.observe(this, Observer{
+            if(it){
+                startScreenText.text = "GAME OVER!"
+                startScreenText.visibility = View.VISIBLE
+                startScreenButton.text = "PLAY AGAIN"
+                startScreenButton.visibility = View.VISIBLE
+            }
+        })
     }
 
     fun displayState(){
@@ -67,30 +80,31 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         moveLeftButton = findViewById(R.id.moveLeft_button)
         moveDownButton = findViewById(R.id.moveDown_button)
         rotateButton = findViewById(R.id.rotate_button)
-        /*
-        //gameDisplayer = GameSurfaceView(this.applicationContext )
-        var canvas = Canvas()
-        var paint = Paint()
-        paint.color = Color.RED
 
-        canvas.drawRect(200f, 100f, 200f, 200f, paint)
+        startScreenButton = findViewById(R.id.startScreen_button)
+        startScreenText = findViewById(R.id.startScreen_text)
 
-        surfaceView.setBackgroundColor(Color.BLUE)
-
-        //val surfaceLayout: LinearLayout = findViewById(R.id.surfaceView)
-        //surfaceLayout.addView(gameDisplayer)
-
-        findViewById<Button>(R.id.button10).setOnClickListener {
-            (surfaceView as GameSurfaceView).drawBlock(howM)
-            howM++
-        }
-
-        //surfaceView.drawBlock(1)
-        */
     }
 
 
     fun setupClickListeners(){
+        startScreenButton.setOnClickListener {
+            model.startButtonClicked() // mowimy modelowi
+
+            //a teraz sami ustawiamy wszystkie rzeczy na widoczne
+            moveDownButton.visibility = View.VISIBLE
+            moveRightButton.visibility = View.VISIBLE
+            moveLeftButton.visibility = View.VISIBLE
+            rotateButton.visibility = View.VISIBLE
+            gameDisplayer.visibility = View.VISIBLE
+
+            // i na niewidoczne
+            startScreenText.visibility = View.GONE
+            startScreenText.text = " "
+            startScreenButton.visibility = View.GONE
+            startScreenButton.text = " "
+        }
+
         moveRightButton.setOnClickListener {
             if(!model.longPressingButton.first) model.moveButtonPressed(GameController.MOVE_RIGHT)
             else model.moveButtonReleased(GameController.MOVE_RIGHT)
