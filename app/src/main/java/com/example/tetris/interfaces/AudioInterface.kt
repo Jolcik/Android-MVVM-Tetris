@@ -9,4 +9,7 @@ interface AudioInterface {
     fun onStartGame()
     fun onEndGame()
     fun onManyRowsDeleted(howMany: Int)
+
+    fun onPause()
+    fun onResume()
 }

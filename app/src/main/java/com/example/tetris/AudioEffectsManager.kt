@@ -63,8 +63,18 @@ class AudioEffectsManager(context: Context): AudioInterface {
         when(howMany){
             2 -> audioSoundPool.play(sounds[TWO_ROWS_DELETED],0.8f,0.8f,1,0,1f)
             3 -> audioSoundPool.play(sounds[THREE_ROWS_DELETED],0.8f,0.8f,1,0,1f)
-            4 -> audioSoundPool.play(sounds[FOUR_ROWS_DELETED],0.8f,0.8f,1,0,1f)
+            4 -> audioSoundPool.play(sounds[FOUR_ROWS_DELETED],0.5f,0.5f,1,0,1f)
         }
+    }
+
+    override fun onPause() {
+        mediaPlayer.pause()
+        audioSoundPool.autoPause()
+    }
+
+    override fun onResume() {
+        mediaPlayer.start()
+        audioSoundPool.autoResume()
     }
 
     companion object{

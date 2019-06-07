@@ -27,6 +27,8 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     var tickTime: Long = START_TICK_TIME
     var longPressedTimer: Timer = Timer()
 
+    var isPaused: Boolean = false
+
     var audioManager: AudioInterface? = null // przygotowanie menadzera audio, acitivity jest ustawia
 
     lateinit var gameController: GameController // klasa sterujaca gra
@@ -42,6 +44,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         score.value = 0
         gameOver.value = false
         blockList.value = listOf()
+        isPaused = false
         gameController = GameController(this) // tworzymy nowa gre
         nextTetrimino.value = gameController.nextTetrimino
         nextColor = gameController.nextColor
@@ -74,7 +77,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
 
     fun moveButtonPressed(whichOption: Int){
         Log.d("VM", longPressingButton.first.toString())
-        if(longPressingButton.first == false && !gameController.isTheGameOver) // jak nie trzymamy jakiegos przycisku
+        if(longPressingButton.first == false && !gameController.isTheGameOver && !isPaused) // jak nie trzymamy jakiegos przycisku
             when (whichOption) { // informujemy o wcisnieciu przycisku
                 MOVE_RIGHT -> gameController.moveTetrimino(MOVE_RIGHT)
                 MOVE_LEFT -> gameController.moveTetrimino(MOVE_LEFT)
@@ -87,14 +90,14 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
     fun moveButtonLongPressed(whichButton: Int){
-        if(!longPressingButton.first && !gameController.isTheGameOver){
+        if(!longPressingButton.first && !gameController.isTheGameOver && !isPaused){
             if(whichButton == MOVE_DOWN) {
                 timer.cancel()
                 timer = Timer()
                 timer.scheduleAtFixedRate(SHORT_TICK_TIME, SHORT_TICK_TIME){ onTimerTick() }
                 onTimerTick()
             }
-            else {
+            else{
                 longPressedTimer = Timer()
                 longPressedTimer.scheduleAtFixedRate(SHORT_TICK_TIME, SHORT_TICK_TIME) {
                     gameController.moveTetrimino(whichButton)
@@ -105,7 +108,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
     fun moveButtonReleased(whichButton: Int){
-        if(whichButton == longPressingButton.second && !gameController.isTheGameOver) {
+        if(whichButton == longPressingButton.second && !gameController.isTheGameOver && !isPaused) {
             if(whichButton == MOVE_DOWN)
                 resetTimer()
             else longPressedTimer.cancel()
@@ -113,8 +116,18 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         }
     }
 
-    fun pauseOrResumeGame(){
-
+    fun pauseButtonPressed(){
+        if(!isPaused){
+            isPaused = true // zaznacz ze pauza
+            timer.cancel() // odwolaj timer
+            audioManager?.onPause() // wykonaj odpowiednie dzialania co do dzwieku
+        }
+        else{
+            isPaused = false // ustawiamy znowu
+            timer = Timer() // tworzymy nowy timer z mniejszym delayem, nie da sie spauzowac timera
+            timer.scheduleAtFixedRate(tickTime/2, tickTime){ onTimerTick() }
+            audioManager?.onResume()
+        }
     }
 
     fun resetTimer(){
@@ -158,6 +171,11 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     override fun moveFailed() {
         // tylko audio
         audioManager?.onRotateFail()
+        if(longPressingButton.first){
+            longPressedTimer.cancel()
+            longPressedTimer = Timer()
+            longPressingButton = Pair(false, 0)
+        }
     }
 
     override fun manyRowsDeleted(howMany: Int) {

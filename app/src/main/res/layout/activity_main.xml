@@ -78,7 +78,7 @@
             app:layout_constraintStart_toEndOf="@+id/moveLeft_button"
             app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/moveRight_button"
             app:layout_constraintBottom_toTopOf="@+id/moveDown_button"
-            android:background="@android:drawable/ic_menu_rotate" android:backgroundTint="@color/colorAccent"
+            android:background="@drawable/rotate"
             android:visibility="gone" android:layout_marginTop="8dp"
             app:layout_constraintTop_toTopOf="@+id/guideline"/>
     <Button
@@ -88,7 +88,7 @@
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintTop_toTopOf="@+id/guideline"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_chainStyle="spread_inside"
-            android:background="@android:drawable/ic_media_rew" android:backgroundTint="@color/colorAccent"
+            android:background="@drawable/left"
             android:layout_marginBottom="8dp" android:layout_marginTop="8dp" android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp" android:visibility="gone"/>
     <Button
@@ -98,8 +98,8 @@
             app:layout_constraintStart_toEndOf="@+id/rotate_button" app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline"
-            app:layout_constraintBottom_toBottomOf="parent" android:background="@android:drawable/ic_media_ff"
-            android:backgroundTint="@color/colorAccent" android:layout_marginStart="32dp"
+            app:layout_constraintBottom_toBottomOf="parent" android:background="@drawable/right"
+            android:layout_marginStart="32dp"
             android:layout_marginEnd="16dp" android:layout_marginTop="8dp" android:layout_marginBottom="8dp"
             android:visibility="gone"/>
     <Button
@@ -109,7 +109,7 @@
             app:layout_constraintTop_toBottomOf="@+id/rotate_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/rotate_button"
-            android:background="@android:drawable/arrow_down_float" android:backgroundTint="@color/colorAccent"
+            android:background="@drawable/down"
             app:layout_constraintEnd_toEndOf="@+id/rotate_button" android:visibility="gone"/>
 
     <androidx.constraintlayout.widget.Guideline
@@ -117,4 +117,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/HalfScreen"
             app:layout_constraintGuide_percent="0.5"/>
+    <Button
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:id="@+id/pause_button"
+            android:background="@drawable/pause" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp" app:layout_constraintStart_toEndOf="@+id/surfaceView"
+            android:layout_marginStart="8dp" android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

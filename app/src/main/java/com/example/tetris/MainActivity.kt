@@ -6,6 +6,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     lateinit var moveRightButton: Button
     lateinit var moveLeftButton: Button
     lateinit var rotateButton: Button
+    lateinit var pauseButton: Button
 
     // wyswietla gre tzn. wszystkie bloki itd
     lateinit var gameDisplayer: GameSurfaceView
@@ -77,6 +79,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 gameDisplayer.visibility = View.GONE
                 nextTetriminoDisplayer.visibility = View.GONE
                 scoreText.visibility = View.GONE
+                pauseButton.visibility = View.GONE
 
                 // wyswietlamy koncowe napisy
                 startScreenText.text = "GAME OVER!"
@@ -106,6 +109,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         moveLeftButton = findViewById(R.id.moveLeft_button)
         moveDownButton = findViewById(R.id.moveDown_button)
         rotateButton = findViewById(R.id.rotate_button)
+        pauseButton = findViewById(R.id.pause_button)
 
         startScreenButton = findViewById(R.id.startScreen_button)
         startScreenText = findViewById(R.id.startScreen_text)
@@ -134,6 +138,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
             gameDisplayer.visibility = View.VISIBLE
             nextTetriminoDisplayer.visibility = View.VISIBLE
             scoreText.visibility = View.VISIBLE
+            pauseButton.visibility = View.VISIBLE
 
             model.startButtonClicked() // mowimy
         }
@@ -154,6 +159,12 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         moveLeftButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_LEFT); false } // jest to dlatego ze jak nie skonsumujemy to wywoluje sie zwykly click listener
         moveDownButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_DOWN); false }
 
+        pauseButton.setOnClickListener {
+            if(model.isPaused)
+                pauseButton.setBackgroundResource(R.drawable.pause)
+            else pauseButton.setBackgroundResource(R.drawable.play)
+            model.pauseButtonPressed()
+        }
     }
 
     fun onSurfaceCreated(){
@@ -180,6 +191,20 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
             Block(positions[6], positions[7], model.nextColor)
         )
         nextTetriminoDisplayer.drawBlocks(blocksToShow)
+    }
+
+    override fun onPause() { // wyjscie z aplikacji ja pauzuje
+        super.onPause()
+
+        if(gameDisplayer.isVisible)
+            model.pauseButtonPressed()
+    }
+
+    override fun onResume(){ // powrot odpauzowuje
+        super.onResume()
+
+        if(gameDisplayer.isVisible)
+            model.pauseButtonPressed()
     }
 
 }
