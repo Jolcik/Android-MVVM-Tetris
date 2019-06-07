@@ -8,6 +8,7 @@ import com.example.tetris.GameController.Companion.MOVE_DOWN
 import com.example.tetris.GameController.Companion.MOVE_LEFT
 import com.example.tetris.GameController.Companion.MOVE_RIGHT
 import com.example.tetris.GameController.Companion.ROTATE
+import com.example.tetris.interfaces.AudioInterface
 import com.example.tetris.interfaces.TetriminoCallback
 import com.example.tetris.models.Block
 import java.util.*
@@ -25,6 +26,8 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     var timer: Timer = Timer() // timer do wywolywania kolejnych tykniec
     var tickTime: Long = START_TICK_TIME
     var longPressedTimer: Timer = Timer()
+
+    var audioManager: AudioInterface? = null // przygotowanie menadzera audio, acitivity jest ustawia
 
     lateinit var gameController: GameController // klasa sterujaca gra
 
@@ -45,6 +48,17 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         tickTime = START_TICK_TIME
         timer = Timer()
         timer.scheduleAtFixedRate(tickTime, tickTime){ onTimerTick() } // ustawiamy timer
+
+        // AUDIO
+        audioManager?.onStartGame()
+    }
+
+    override fun gameOverCallback() {
+        timer.cancel()
+        gameOver.postValue(true)
+
+        // AUDIO
+        audioManager?.onEndGame()
     }
 
     fun onTimerTick(){
@@ -53,6 +67,9 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         allBlocks.addAll(gameController.blocks)
         allBlocks.addAll(gameController.tetrimino.blocks)
         blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
+
+        // AUDIO
+        audioManager?.onBlockFall()
     }
 
     fun moveButtonPressed(whichOption: Int){
@@ -96,6 +113,10 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         }
     }
 
+    fun pauseOrResumeGame(){
+
+    }
+
     fun resetTimer(){
         timer.cancel()
         timer = Timer()
@@ -119,6 +140,9 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         score.postValue(gameController.score)
         nextColor = gameController.nextColor
         nextTetrimino.postValue(gameController.nextTetrimino)
+
+        // AUDIO
+        audioManager?.onBlockLockdown()
     }
 
     override fun tetriminoMovedCallback() {
@@ -126,11 +150,19 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         allBlocks.addAll(gameController.blocks)
         allBlocks.addAll(gameController.tetrimino.blocks)
         blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
+
+        // AUDIO
+        audioManager?.onMove()
     }
 
-    override fun gameOverCallback() {
-        timer.cancel()
-        gameOver.postValue(true)
+    override fun moveFailed() {
+        // tylko audio
+        audioManager?.onRotateFail()
+    }
+
+    override fun manyRowsDeleted(howMany: Int) {
+        // tylko audio
+        audioManager?.onManyRowsDeleted(howMany)
     }
 
     companion object{

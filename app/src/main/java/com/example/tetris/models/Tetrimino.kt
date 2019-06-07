@@ -69,11 +69,11 @@ class Tetrimino(whichShape: Char, whichColor: Int) {
         return true
     }
 
-    fun rotate(state: Array<Array<Int>>){
+    fun rotate(state: Array<Array<Int>>): Boolean{
         var center = when(shape){ // na podstawie ksztaltu wyznaczamy srodek figury
             'I' -> Pair(blocks[1].posX, blocks[1].posY)
             'T' -> Pair(blocks[1].posX, blocks[1].posY)
-            'O' -> return // kwadrat nie ma jak sie obrocic
+            'O' -> return true // kwadrat nie ma jak sie obrocic
             'L' -> Pair(blocks[2].posX, blocks[2].posY)
             'J' -> Pair(blocks[1].posX, blocks[1].posY)
             'S' -> Pair(blocks[2].posX, blocks[2].posY)
@@ -91,7 +91,7 @@ class Tetrimino(whichShape: Char, whichColor: Int) {
             if( center.first + y !in (0 until GameController.PLAYGROUND_WIDTH) || // czy w planszy
                 center.second + x !in (0 until GameController.PLAYGROUND_HEIGHT) || // uklad obrocony
                 state[center.first + y][center.second + x] == 1) // jak ktorykolwiek zajety
-                return // to wyjdz
+                return false
         }
         Log.d("ROT BEFORE", blocks.toString())
 
@@ -102,6 +102,7 @@ class Tetrimino(whichShape: Char, whichColor: Int) {
             it.posX = center.first + y
             it.posY = center.second + x // uklad obrocony
         }
+        return true
         Log.d("ROT AFTER", blocks.toString())
     }
 

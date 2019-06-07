@@ -46,12 +46,14 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
     }
 
     fun moveTetrimino(option: Int){
-        when (option) {
+        var moveDone = when (option) {
             MOVE_RIGHT -> tetrimino.moveRight(stateOfBoard)
             MOVE_LEFT -> tetrimino.moveLeft(stateOfBoard)
             ROTATE -> tetrimino.rotate(stateOfBoard)
+            else -> true
         }
         tetriminoCallback.tetriminoMovedCallback() // powiedz ze sie ruszyl
+        if(!moveDone) tetriminoCallback.moveFailed()
     }
 
     fun refreshStateOfBoard(){
@@ -78,9 +80,12 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
                 }
             }
         }
-        if(howManyRowsInOneTick > 0)
-            score += (tempScore * MANY_ROWS_SCORE_MULTIPLIER.pow(howManyRowsInOneTick-1)).toInt()
+        if(howManyRowsInOneTick > 1) {
+            score += (tempScore * MANY_ROWS_SCORE_MULTIPLIER.pow(howManyRowsInOneTick)).toInt()
+            tetriminoCallback.manyRowsDeleted(howManyRowsInOneTick)
+        }
         else score += tempScore
+
     }
 
     fun deleteRow(whichRow: Int){

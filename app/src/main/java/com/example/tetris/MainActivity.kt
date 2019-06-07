@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.tetris.interfaces.AudioInterface
 import com.example.tetris.models.Block
 import com.example.tetris.models.Tetrimino
 
@@ -34,6 +35,8 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     lateinit var startScreenText: TextView
     lateinit var endScoreText: TextView
 
+    lateinit var audioManager: AudioEffectsManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,6 +60,11 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         gameDisplayer.wasSurfaceCreated.observe(this, Observer {
             if(it == true)
                 onSurfaceCreated()
+        })
+
+        nextTetriminoDisplayer.wasSurfaceCreated.observe(this, Observer{
+            if(it == true)
+                setNextTetriminoView()
         })
 
         model.gameOver.observe(this, Observer{
@@ -102,6 +110,9 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         startScreenButton = findViewById(R.id.startScreen_button)
         startScreenText = findViewById(R.id.startScreen_text)
         endScoreText = findViewById(R.id.startScreenScore_text)
+
+        audioManager = AudioEffectsManager(this.applicationContext)
+        model.audioManager = audioManager
     }
 
 
@@ -124,8 +135,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
             nextTetriminoDisplayer.visibility = View.VISIBLE
             scoreText.visibility = View.VISIBLE
 
-            model.startButtonClicked() // mowimy modelowi
-
+            model.startButtonClicked() // mowimy
         }
 
         moveRightButton.setOnClickListener {
@@ -134,10 +144,11 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         }
         moveLeftButton.setOnClickListener {
             if(!model.longPressingButton.first) model.moveButtonPressed(GameController.MOVE_LEFT)
-            else model.moveButtonReleased(GameController.MOVE_LEFT)
         }
         moveDownButton.setOnClickListener { model.moveButtonPressed(GameController.MOVE_DOWN) }
-        rotateButton.setOnClickListener { model.moveButtonPressed(GameController.ROTATE) }
+        rotateButton.setOnClickListener {
+            model.moveButtonPressed(GameController.ROTATE)
+        }
 
         moveRightButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_RIGHT); false } // false oznacza ze nie skonsumowalismy eventu
         moveLeftButton.setOnLongClickListener { model.moveButtonLongPressed(GameController.MOVE_LEFT); false } // jest to dlatego ze jak nie skonsumujemy to wywoluje sie zwykly click listener
@@ -147,7 +158,6 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
     fun onSurfaceCreated(){
         gameDisplayer.drawBlock(model.blockList.value!!)
-        setNextTetriminoView()
         scoreText.text = "SCORE: ${model.score.value}"
     }
 
