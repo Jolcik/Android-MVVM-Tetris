@@ -46,24 +46,24 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
     }
 
     fun moveTetrimino(option: Int){
-        var moveDone = when (option) {
-            MOVE_RIGHT -> tetrimino.moveRight(stateOfBoard)
+        var moveDone = when (option) { // sproboj wykonac ruch, zwraca to wartosc logiczna
+            MOVE_RIGHT -> tetrimino.moveRight(stateOfBoard) // na jej podstawie wysylamy dany callback
             MOVE_LEFT -> tetrimino.moveLeft(stateOfBoard)
             ROTATE -> tetrimino.rotate(stateOfBoard)
             else -> true
         }
         tetriminoCallback.tetriminoMovedCallback() // powiedz ze sie ruszyl
-        if(!moveDone) tetriminoCallback.moveFailed()
+        if(!moveDone) tetriminoCallback.moveFailed() // jak sie nie udalo to wywolaj callback
     }
 
-    fun refreshStateOfBoard(){
+    private fun refreshStateOfBoard(){
         for(i in (0 until PLAYGROUND_WIDTH)) // wyzeruj stany
             for(j in (0 until PLAYGROUND_HEIGHT))
                 stateOfBoard[i][j] = 0
         blocks.forEach{ block -> stateOfBoard[block.posX][block.posY] = 1 } // ustaw dla danego bloku jeden
     }
 
-    fun checkIfColumnCanBeRemoved(){
+    private fun checkIfColumnCanBeRemoved(){
         var tempScore = 0
         var howManyRowsInOneTick = 0
         for(j in (0 until PLAYGROUND_HEIGHT)){
@@ -88,21 +88,21 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
 
     }
 
-    fun deleteRow(whichRow: Int){
+    private fun deleteRow(whichRow: Int){
         blocks.filter { it.posY == whichRow }.forEach {
             blocks.remove(it)
         }
         refreshStateOfBoard()
     }
 
-    fun moveDownUpperBlocks(whichRow: Int){
+    private fun moveDownUpperBlocks(whichRow: Int){
         blocks.filter { it.posY < whichRow }.forEach {
             it.moveDown()
         }
         refreshStateOfBoard()
     }
 
-    fun initStateOfBoard(){
+    private fun initStateOfBoard(){
         for (i in (0 until PLAYGROUND_WIDTH)){
             var array = arrayOf<Int>()
             for (j in (0 until PLAYGROUND_HEIGHT)){

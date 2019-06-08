@@ -70,7 +70,7 @@ class Tetrimino(whichShape: Char, whichColor: Int) {
     }
 
     fun rotate(state: Array<Array<Int>>): Boolean{
-        var center = when(shape){ // na podstawie ksztaltu wyznaczamy srodek figury
+        val center = when(shape){ // na podstawie ksztaltu wyznaczamy srodek figury
             'I' -> Pair(blocks[1].posX, blocks[1].posY)
             'T' -> Pair(blocks[1].posX, blocks[1].posY)
             'O' -> return true // kwadrat nie ma jak sie obrocic
@@ -102,8 +102,8 @@ class Tetrimino(whichShape: Char, whichColor: Int) {
             it.posX = center.first + y
             it.posY = center.second + x // uklad obrocony
         }
-        return true
         Log.d("ROT AFTER", blocks.toString())
+        return true
     }
 
 

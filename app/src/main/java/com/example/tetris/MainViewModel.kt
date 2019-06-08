@@ -1,6 +1,5 @@
 package com.example.tetris
 
-import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -41,7 +40,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
     fun startButtonClicked(){ // nowa gra
-        score.value = 0
+        score.value = 0 // ustawiamy znaczniki na poczatkowe
         gameOver.value = false
         blockList.value = listOf()
         isPaused = false
@@ -56,7 +55,21 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         audioManager?.onStartGame()
     }
 
-    override fun gameOverCallback() {
+    fun pauseButtonPressed(){
+        if(!isPaused){
+            isPaused = true // zaznacz ze pauza
+            timer.cancel() // odwolaj timer
+            audioManager?.onPause() // wykonaj odpowiednie dzialania co do dzwieku
+        }
+        else{
+            isPaused = false // ustawiamy znowu
+            timer = Timer() // tworzymy nowy timer z mniejszym delayem, nie da sie spauzowac timera
+            timer.scheduleAtFixedRate(tickTime/2, tickTime){ onTimerTick() }
+            audioManager?.onResume()
+        }
+    }
+
+    override fun gameOverCallback() { // koniec gry
         timer.cancel()
         gameOver.postValue(true)
 
@@ -66,7 +79,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
 
     fun onTimerTick(){
         gameController.makeTick() // wykonaj tykniecie
-        var allBlocks: ArrayList<Block> = arrayListOf() // tworzymi liste ktora polaczy te dwie
+        var allBlocks: ArrayList<Block> = arrayListOf() // tworzymy liste ktora polaczy te dwie
         allBlocks.addAll(gameController.blocks)
         allBlocks.addAll(gameController.tetrimino.blocks)
         blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
@@ -77,7 +90,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
 
     fun moveButtonPressed(whichOption: Int){
         Log.d("VM", longPressingButton.first.toString())
-        if(longPressingButton.first == false && !gameController.isTheGameOver && !isPaused) // jak nie trzymamy jakiegos przycisku
+        if(!longPressingButton.first && !gameController.isTheGameOver && !isPaused) // jak nie trzymamy jakiegos przycisku
             when (whichOption) { // informujemy o wcisnieciu przycisku
                 MOVE_RIGHT -> gameController.moveTetrimino(MOVE_RIGHT)
                 MOVE_LEFT -> gameController.moveTetrimino(MOVE_LEFT)
@@ -107,30 +120,16 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         }
     }
 
-    fun moveButtonReleased(whichButton: Int){
+    fun moveButtonReleased(whichButton: Int){ // puszczamy przycisk
         if(whichButton == longPressingButton.second && !gameController.isTheGameOver && !isPaused) {
-            if(whichButton == MOVE_DOWN)
+            if(whichButton == MOVE_DOWN) // jak w dol to tylko resetujemy timer
                 resetTimer()
-            else longPressedTimer.cancel()
-            longPressingButton = Pair(false, 0)
+            else longPressedTimer.cancel() // w przypadku bocznych przyciskow odwolujemy timer
+            longPressingButton = Pair(false, 0) // przestawiamy pare
         }
     }
 
-    fun pauseButtonPressed(){
-        if(!isPaused){
-            isPaused = true // zaznacz ze pauza
-            timer.cancel() // odwolaj timer
-            audioManager?.onPause() // wykonaj odpowiednie dzialania co do dzwieku
-        }
-        else{
-            isPaused = false // ustawiamy znowu
-            timer = Timer() // tworzymy nowy timer z mniejszym delayem, nie da sie spauzowac timera
-            timer.scheduleAtFixedRate(tickTime/2, tickTime){ onTimerTick() }
-            audioManager?.onResume()
-        }
-    }
-
-    fun resetTimer(){
+    fun resetTimer(){ // resetuje timer
         timer.cancel()
         timer = Timer()
         timer.scheduleAtFixedRate(tickTime, tickTime){ onTimerTick() }
@@ -150,9 +149,9 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         */
         if(tickTime > MIN_TICK_TIME) // szybsza gra
             tickTime -= TICK_TIME_STEP
-        score.postValue(gameController.score)
-        nextColor = gameController.nextColor
-        nextTetrimino.postValue(gameController.nextTetrimino)
+        score.postValue(gameController.score) // poprawiamy wynik
+        nextColor = gameController.nextColor //ustawiamy nastepny kolor
+        nextTetrimino.postValue(gameController.nextTetrimino) // i nastepne tetrimino
 
         // AUDIO
         audioManager?.onBlockLockdown()
@@ -186,8 +185,8 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     companion object{
         const val START_TICK_TIME: Long = 700
         const val SHORT_TICK_TIME: Long = 100
-        const val MIN_TICK_TIME: Long = 300
-        const val TICK_TIME_STEP = 10
+        const val MIN_TICK_TIME: Long = 100
+        const val TICK_TIME_STEP = 4
     }
 
 }

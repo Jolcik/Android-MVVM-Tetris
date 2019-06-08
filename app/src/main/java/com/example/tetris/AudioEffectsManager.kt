@@ -8,7 +8,7 @@ import com.example.tetris.interfaces.AudioInterface
 class AudioEffectsManager(context: Context): AudioInterface {
 
     val mediaPlayer = MediaPlayer.create(context, R.raw.main_theme)
-    val audioSoundPool = SoundPool.Builder().setMaxStreams(8).build()
+    val audioSoundPool = SoundPool.Builder().setMaxStreams(9).build()
     var sounds: Array<Int>
 
     init{
@@ -22,16 +22,20 @@ class AudioEffectsManager(context: Context): AudioInterface {
             audioSoundPool.load(context, R.raw.block_lockdown, 1),
             audioSoundPool.load(context, R.raw.noice_sound, 1),
             audioSoundPool.load(context, R.raw.skamieliny_sound, 1),
-            audioSoundPool.load(context, R.raw.aleurwal_sound, 1)
+            audioSoundPool.load(context, R.raw.aleurwal_sound, 1),
+            audioSoundPool.load(context, R.raw.game_over, 1)
         )
     }
 
     override fun onStartGame() {
         mediaPlayer.start()
+        audioSoundPool.stop(sounds[GAME_OVER])
     }
 
     override fun onEndGame() {
+        audioSoundPool.play(sounds[GAME_OVER],0.4f,0.4f,1,0,1f)
         mediaPlayer.stop()
+        mediaPlayer.prepare()
     }
 
     override fun onBlockFall() {
@@ -86,5 +90,6 @@ class AudioEffectsManager(context: Context): AudioInterface {
         const val TWO_ROWS_DELETED = 5
         const val THREE_ROWS_DELETED = 6
         const val FOUR_ROWS_DELETED = 7
+        const val GAME_OVER = 8
     }
 }
