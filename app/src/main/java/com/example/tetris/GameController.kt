@@ -7,7 +7,7 @@ import com.example.tetris.models.Block
 import com.example.tetris.models.Tetrimino
 import kotlin.math.pow
 
-class GameController(val tetriminoCallback: TetriminoCallback) {
+class GameController(val tetriminoCallback: TetriminoCallback?) {
 
     var blocks: ArrayList<Block> = arrayListOf()
     var tetrimino: Tetrimino = Tetrimino(Tetrimino.shapes[0], Tetrimino.colors[0])
@@ -37,10 +37,10 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
             tetrimino.blocks.forEach { // jezeli w miejscu nowego tetrimino juz cos jest to koniec gry
                 if(stateOfBoard[it.posX][it.posY] == 1) {
                     isTheGameOver = true
-                    tetriminoCallback.gameOverCallback()
+                    tetriminoCallback?.gameOverCallback()
                 }
             }
-            tetriminoCallback.onNewTetriminoCallback() // powiedz ze jest nowy
+            tetriminoCallback?.onNewTetriminoCallback() // powiedz ze jest nowy
             // jest to po to zeby zwolnic timer, jak juz dojdzie
         }
     }
@@ -52,8 +52,8 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
             ROTATE -> tetrimino.rotate(stateOfBoard)
             else -> true
         }
-        tetriminoCallback.tetriminoMovedCallback() // powiedz ze sie ruszyl
-        if(!moveDone) tetriminoCallback.moveFailed() // jak sie nie udalo to wywolaj callback
+        tetriminoCallback?.tetriminoMovedCallback() // powiedz ze sie ruszyl
+        if(!moveDone) tetriminoCallback?.moveFailed() // jak sie nie udalo to wywolaj callback
     }
 
     private fun refreshStateOfBoard(){
@@ -81,8 +81,8 @@ class GameController(val tetriminoCallback: TetriminoCallback) {
             }
         }
         if(howManyRowsInOneTick > 1) {
-            score += (tempScore * MANY_ROWS_SCORE_MULTIPLIER.pow(howManyRowsInOneTick)).toInt()
-            tetriminoCallback.manyRowsDeleted(howManyRowsInOneTick)
+            score += (tempScore * MANY_ROWS_SCORE_MULTIPLIER.pow(howManyRowsInOneTick-1)).toInt()
+            tetriminoCallback?.manyRowsDeleted(howManyRowsInOneTick)
         }
         else score += tempScore
 

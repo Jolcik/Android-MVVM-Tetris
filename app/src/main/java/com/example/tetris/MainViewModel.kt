@@ -129,24 +129,14 @@ class MainViewModel: ViewModel(), TetriminoCallback {
         }
     }
 
-    fun resetTimer(){ // resetuje timer
+    private fun resetTimer(){ // resetuje timer
         timer.cancel()
         timer = Timer()
         timer.scheduleAtFixedRate(tickTime, tickTime){ onTimerTick() }
     }
 
-    override fun onNewTetriminoCallback() { // zeby mozna bylo zwolnic timer po stworzeniu nowego tetrimino
-        // chodzi o to ze gdy trzymamy przycisk do poruszania sie w dol, to w trakcie calej akcji tetrimino moze sie
-        // ustawic na dole i kolejne zostanie stworzone
-        // trzymajac dalej przycisk timer dalej bedzoe wykonywal szybkie tykniecia, co przy slabym refleksie
-        // moze prowadzic do produkcji brzydkiego slowa (a nawet kilku!), zatem jestesmy user friendly
+    override fun onNewTetriminoCallback() {
         Log.d("VM", "Nowe tetrimino!")
-        /*
-        if(longPressingButton.first && longPressingButton.second == MOVE_DOWN) {
-            resetTimer()
-            longPressingButton = Pair(false, 0)
-        }
-        */
         if(tickTime > MIN_TICK_TIME) // szybsza gra
             tickTime -= TICK_TIME_STEP
         score.postValue(gameController.score) // poprawiamy wynik
@@ -158,7 +148,7 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
     override fun tetriminoMovedCallback() {
-        var allBlocks: ArrayList<Block> = arrayListOf() // tworzymi liste ktora polaczy te dwie
+        var allBlocks: ArrayList<Block> = arrayListOf() // tworzymy liste ktora polaczy te dwie
         allBlocks.addAll(gameController.blocks)
         allBlocks.addAll(gameController.tetrimino.blocks)
         blockList.postValue(allBlocks) // ustawiamy nowa wartosc, co zalacza obserwatora
@@ -168,7 +158,6 @@ class MainViewModel: ViewModel(), TetriminoCallback {
     }
 
     override fun moveFailed() {
-        // tylko audio
         audioManager?.onRotateFail()
         if(longPressingButton.first){
             longPressedTimer.cancel()

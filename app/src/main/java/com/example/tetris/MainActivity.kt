@@ -210,15 +210,17 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     override fun onPause() { // wyjscie z aplikacji ja pauzuje
         super.onPause()
 
-        if(gameDisplayer.isVisible)
-            model.pauseButtonPressed()
+        if(gameDisplayer.isVisible && !model.isPaused)
+            pauseButton.callOnClick()
+            //model.pauseButtonPressed()
     }
 
     override fun onResume(){ // powrot odpauzowuje
         super.onResume()
 
-        if(gameDisplayer.isVisible)
-            model.pauseButtonPressed()
+        if(gameDisplayer.isVisible && model.isPaused)
+            pauseButton.callOnClick()
+            //model.pauseButtonPressed()
     }
 
 }
