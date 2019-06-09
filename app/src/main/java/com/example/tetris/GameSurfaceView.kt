@@ -2,8 +2,6 @@ package com.example.tetris
 
 import android.content.Context
 import android.graphics.*
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder
@@ -11,14 +9,13 @@ import android.view.SurfaceView
 import androidx.lifecycle.MutableLiveData
 import com.example.tetris.models.Block
 
-class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes), SurfaceHolder.Callback {
+open class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes), SurfaceHolder.Callback {
 
-    var surfaceHolder  = holder
 
     var wasSurfaceCreated: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
-        surfaceHolder.addCallback(this)
+        holder.addCallback(this)
         setZOrderOnTop(true)
         holder.setFormat(PixelFormat.TRANSLUCENT)
 
@@ -38,7 +35,7 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
     }
 
 
-    fun drawBlock(blocks: List<Block>){
+    open fun drawBlocks(blocks: List<Block>){
         var canvas = holder.lockCanvas()
         var paint = Paint()
 
@@ -65,7 +62,7 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
         // rysowanie blokow
         blocks.forEach{ block ->
             paint.color = block.color
-            var position = createPositionFromBlock(block)
+            var position = createPositionFromBlock(block, GameController.PLAYGROUND_WIDTH, GameController.PLAYGROUND_HEIGHT)
             canvas?.drawRect(position.left, position.top, position.right, position.bottom, paint)
         }
 
@@ -79,10 +76,10 @@ class GameSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
         holder.unlockCanvasAndPost(canvas) // zaktualizowanie view
     }
 
-    fun createPositionFromBlock(block: Block): BlockPosition {
+    fun createPositionFromBlock(block: Block, playgroundWidth: Int, playgroundHeight: Int): BlockPosition {
 
-        val blockWidth = width/GameController.PLAYGROUND_WIDTH.toFloat()
-        val blockHeight = height/GameController.PLAYGROUND_HEIGHT.toFloat()
+        val blockWidth = width/playgroundWidth.toFloat()
+        val blockHeight = height/playgroundHeight.toFloat()
 
         val left = blockWidth * block.posX
         val right = blockWidth * (block.posX+1)

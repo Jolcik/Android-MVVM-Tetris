@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     fun onSurfaceCreated(){
-        gameDisplayer.drawBlock(model.blockList.value!!)
+        gameDisplayer.drawBlocks(model.blockList.value!!)
         scoreText.text = "SCORE: ${model.score.value}"
     }
 
@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         // obserwuje liste blokow i na biezaco wyswietla je na ekranie
         model.blockList.observe(this, Observer {blocks ->
             if (gameDisplayer.wasSurfaceCreated.value == true)
-                gameDisplayer.drawBlock(blocks)
+                gameDisplayer.drawBlocks(blocks)
         })
 
         // wyswietlamy tylko jesli powierzchnia jest gotowa

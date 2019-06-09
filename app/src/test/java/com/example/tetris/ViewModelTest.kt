@@ -2,7 +2,6 @@ package com.example.tetris
 
 import android.graphics.Color
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.ViewModel
 import com.example.tetris.models.Block
 import com.example.tetris.models.Tetrimino
 import com.google.common.truth.Truth.assertThat
