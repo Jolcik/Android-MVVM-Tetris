@@ -2,7 +2,7 @@
 
 **Wstęp**
 
-Witam serdecznie w tym zaułku internetu. W tym miejscu znajduje się mój ostatni projekt na zaliczenie laboratorium z Programowania Obiektowego, czyli adaptacja Tetrisa na telefony z systemem Android. Przy okazji zastosowano tutaj także wzorzec projekt ***Model-View-ViewModel***, który całkiem nieźle spisuje się w tym przypadku. Nie jest to może najbardziej potrzebna tutaj rzecz, ale zrobiłem tak coby poćwiczyć praktyczne wykorzystywanie wzorców projektowych oraz pisania w miarę sensownego kodu na Androidzie. Całość jest napisana w jakże cudownym języku ***Kotlin***.
+Witam serdecznie w tym zaułku internetu. W tym miejscu znajduje się mój ostatni projekt na zaliczenie laboratorium z Programowania Obiektowego, czyli adaptacja Tetrisa na telefony z systemem Android. Przy okazji zastosowano tutaj także wzorzec projekt ***Model-View-ViewModel***, który całkiem nieźle spisuje się w tym przypadku. Nie jest to może najbardziej potrzebna tutaj rzecz, ale zrobiłem tak coby poćwiczyć praktyczne wykorzystywanie wzorców projektowych oraz pisania w miarę sensownego kodu na Androidzie. Całość jest napisana w jakże cudownym języku ***Kotlin*** i zawiera także testy jednostkowe.
 
 **Ogólna architektura i struktura kodu**
 
