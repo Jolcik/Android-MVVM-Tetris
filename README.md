@@ -4,6 +4,10 @@
 
 Witam serdecznie w tym zaułku internetu. W tym miejscu znajduje się mój ostatni projekt na zaliczenie laboratorium z Programowania Obiektowego, czyli adaptacja Tetrisa na telefony z systemem Android. Przy okazji zastosowano tutaj także wzorzec projekt ***Model-View-ViewModel***, który całkiem nieźle spisuje się w tym przypadku. Nie jest to może najbardziej potrzebna tutaj rzecz, ale zrobiłem tak coby poćwiczyć praktyczne wykorzystywanie wzorców projektowych oraz pisania w miarę sensownego kodu na Androidzie. Całość jest napisana w jakże cudownym języku ***Kotlin*** i zawiera także testy jednostkowe.
 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/18964478/75636130-60237e80-5c1c-11ea-916c-8c79a4ce4ff0.jpg">
+</p>
+
 **Ogólna architektura i struktura kodu**
 
 Jak już wspomniałem, wykorzystuję tutaj wzorzec projektowy ***MVVM***. Na tyle na ile umiem stosuję także zasady SOLID. Dla konkretnego przykładu mogę podać zrealizowanie zasady odwrócenia zależności, w tym przypadku poprzez interfejsy wykorzystywane do komunikacji między warstwami. Są to interfejsy `AudioInterface` i `TetriminoCallbackInterface`. Pierwszy odpowiada za obsługę efektów dźwiękowych, drugi za komunikację między kontrolerem gry, a warstwą sprzętową (tutaj między Modelem, a ViewModelem). Nazwa tego interfejsu może być lekko myląca, a wynika to z tego, że na początku myślałem, że interfejs będzie tylko jedną sytuację obsługiwał. Poźniej to się rozrosło, a nazwa pozostała ta sama. Wiem, niedociągnięcie i równie dobrze w tym czasie kiedy to piszę, mógłbym to skrupulatnie naprawić. Czemu tego nie zrobię? Dla przestrogi, żebym potem zawsze o tym pamiętał, a przynajmniej tak to sobie tłumaczę. Przejdę tymczasem dalej do opisania jak zaimplementowałem elementy wzorca MVVM.
